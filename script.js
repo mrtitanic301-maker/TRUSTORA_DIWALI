@@ -6,7 +6,7 @@ const SUPABASE_URL = "https://ehnbhkhtbtzlefiutham.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ytSwB_gZWTr8nyuByq7HNA_PAd9l6Ws";
 
 // Local backend
-const BACKEND_URL = "http://localhost:3000";
+const BACKEND_URL = "https://trustora-backend-07ky.onrender.com";
 
 // 2. PAGE ELEMENTS
 const form = document.getElementById("surpriseForm");
