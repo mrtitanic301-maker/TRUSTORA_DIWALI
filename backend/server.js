@@ -18,7 +18,11 @@ const supabase = createClient(
 );
 
 app.use(cors({
-    origin: ["http://localhost:5500", "http://127.0.0.1:5500"]
+    origin: [
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "https://trustora-diwali.netlify.app"
+    ]
 }));
 
 app.use(express.json());
