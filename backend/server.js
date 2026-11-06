@@ -1,5 +1,14 @@
 
 const express = require("express");
+const cors = require("cors");
+const { rateLimit } = require("express-rate-limit");
+const multer = require("multer");
+const { createClient } = require("@supabase/supabase-js");
+const { randomUUID } = require("crypto");
+require("dotenv").config();
+
+const app = express();
+
 const uploadLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 10,
@@ -9,14 +18,6 @@ const uploadLimiter = rateLimit({
         error: "Too many upload attempts. Please try again later."
     }
 });
-const cors = require("cors");     
-const { rateLimit } = require("express-rate-limit");
-const multer = require("multer");
-const { createClient } = require("@supabase/supabase-js");
-const { randomUUID } = require("crypto");
-require("dotenv").config();
-
-const app = express();
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error("Supabase backend environment variables missing.");
@@ -61,74 +62,81 @@ app.get("/", (req, res) => {
 });
 
 // Upload photo or video
-app.post("/api/upload/:surpriseId", uploadLimiter, upload.single("media"), async (req, res) => {
-    let filePath;
+app.post(
+    "/api/upload/:surpriseId",
+    uploadLimiter,
+    upload.single("media"),
+    async (req, res) => {
+        let filePath;
 
-    try {
-        const surpriseId = req.params.surpriseId;
+        try {
+            const surpriseId = req.params.surpriseId;
 
-        if (!/^[0-9a-f-]{36}$/i.test(surpriseId)) {
-            return res.status(400).json({ error: "Invalid surprise ID" });
-        }
+            if (!/^[0-9a-f-]{36}$/i.test(surpriseId)) {
+                return res.status(400).json({ error: "Invalid surprise ID" });
+            }
 
-        if (!req.file) {
-            return res.status(400).json({ error: "No file selected" });
-        }
+            if (!req.file) {
+                return res.status(400).json({ error: "No file selected" });
+            }
 
-        const { data: surprise, error: findError } = await supabase
-            .from("surprises")
-            .select("media_paths")
-            .eq("public_id", surpriseId)
-            .maybeSingle();
+            const { data: surprise, error: findError } = await supabase
+                .from("surprises")
+                .select("media_paths")
+                .eq("public_id", surpriseId)
+                .maybeSingle();
 
-        if (findError) throw findError;
+            if (findError) throw findError;
 
-        if (!surprise) {
-            return res.status(404).json({ error: "Surprise not found" });
-        }
+            if (!surprise) {
+                return res.status(404).json({ error: "Surprise not found" });
+            }
 
-        const extensions = {
-            "image/jpeg": "jpg",
-            "image/png": "png",
-            "image/webp": "webp",
-            "video/mp4": "mp4"
-        };
+            const extensions = {
+                "image/jpeg": "jpg",
+                "image/png": "png",
+                "image/webp": "webp",
+                "video/mp4": "mp4"
+            };
 
-        const extension = extensions[req.file.mimetype];
-        filePath = `${surpriseId}/${randomUUID()}.${extension}`;
+            const extension = extensions[req.file.mimetype];
+            filePath = `${surpriseId}/${randomUUID()}.${extension}`;
 
-        const { error: uploadError } = await supabase.storage
-            .from("TRUSTORA")
-            .upload(filePath, req.file.buffer, {
-                contentType: req.file.mimetype,
-                upsert: false
+            const { error: uploadError } = await supabase.storage
+                .from("TRUSTORA")
+                .upload(filePath, req.file.buffer, {
+                    contentType: req.file.mimetype,
+                    upsert: false
+                });
+
+            if (uploadError) throw uploadError;
+
+            const paths = [...(surprise.media_paths || []), filePath];
+
+            const { error: updateError } = await supabase
+                .from("surprises")
+                .update({ media_paths: paths })
+                .eq("public_id", surpriseId);
+
+            if (updateError) throw updateError;
+
+            return res.json({ success: true });
+
+        } catch (error) {
+            console.error("Upload error:", error.message);
+
+            if (filePath) {
+                await supabase.storage
+                    .from("TRUSTORA")
+                    .remove([filePath]);
+            }
+
+            return res.status(500).json({
+                error: "Upload failed. Please try again."
             });
-
-        if (uploadError) throw uploadError;
-
-        const paths = [...(surprise.media_paths || []), filePath];
-
-        const { error: updateError } = await supabase
-            .from("surprises")
-            .update({ media_paths: paths })
-            .eq("public_id", surpriseId);
-
-        if (updateError) {
-            await supabase.storage.from("TRUSTORA").remove([filePath]);
-            throw updateError;
         }
-
-        res.json({ success: true });
-    } catch (error) {
-        console.error("Upload error:", error.message);
-
-        if (filePath) {
-            await supabase.storage.from("TRUSTORA").remove([filePath]);
-        }
-
-        res.status(500).json({ error: "Upload failed. Please try again." });
     }
-});
+);
 
 // Get temporary media links when recipient opens surprise
 app.get("/api/media/:surpriseId", async (req, res) => {
@@ -167,15 +175,22 @@ app.get("/api/media/:surpriseId", async (req, res) => {
             };
         }));
 
-        res.json({ media });
+        return res.json({ media });
+
     } catch (error) {
         console.error("Media error:", error.message);
-        res.status(500).json({ error: "Could not load media." });
+
+        return res.status(500).json({
+            error: "Could not load media."
+        });
     }
 });
 
+// Error handler
 app.use((err, req, res, next) => {
-    res.status(400).json({
+    console.error("Request error:", err.message);
+
+    res.status(err instanceof multer.MulterError ? 400 : 400).json({
         error: err.message || "Invalid request"
     });
 });
