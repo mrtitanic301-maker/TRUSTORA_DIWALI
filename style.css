@@ -779,3 +779,44 @@ textarea:focus-visible {
     background: #d9b56d;
     color: #17131b;
 }
+
+/* TRUSTORA Premium Occasion Mascots */
+.occasion-card {
+    overflow: hidden;
+    text-align: center;
+}
+
+.occasion-mascot {
+    width: 100%;
+    height: 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #13131b;
+}
+
+.occasion-mascot img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.occasion-card:hover .occasion-mascot img {
+    transform: scale(1.06);
+}
+
+.occasion-emoji {
+    font-size: 65px;
+    color: #f6dda3;
+}
+
+@media (max-width: 600px) {
+    .occasion-mascot {
+        height: 135px;
+    }
+}
