@@ -746,3 +746,36 @@ textarea:focus-visible {
         transition-duration: .01ms !important;
     }
 }
+
+.trustora-sparkle {
+    display: block;
+    text-shadow: 0 0 12px #f6dda3;
+    will-change: opacity, transform;
+}
+
+/* TRUSTORA Music Player */
+.trustora-music {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 99999;
+    display: block;
+}
+
+#music-toggle {
+    display: inline-block;
+    background: #17131b;
+    color: #f6dda3;
+    border: 2px solid #d9b56d;
+    border-radius: 30px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 20px #d9b56d55;
+}
+
+#music-toggle:hover {
+    background: #d9b56d;
+    color: #17131b;
+}

@@ -634,3 +634,56 @@ const surpriseId = params.get("surprise");
 if (surpriseId) {
     loadSurprise(surpriseId);
 }
+
+/* TRUSTORA Music Controls */
+(() => {
+    const audio = document.getElementById("trustora-audio");
+    const button = document.getElementById("music-toggle");
+
+    if (!audio || !button) return;
+
+    button.addEventListener("click", async () => {
+        if (audio.paused) {
+            if (!audio.src) {
+                button.textContent = "♫ Music file not added";
+                return;
+            }
+
+            try {
+                await audio.play();
+                button.textContent = "♫ Music: ON";
+            } catch {
+                button.textContent = "♫ Tap to play";
+            }
+        } else {
+            audio.pause();
+            button.textContent = "♫ Music: OFF";
+        }
+    });
+})();
+
+/* TRUSTORA Golden Sparkles */
+(() => {
+    const layer = document.getElementById("trustora-sparkles");
+
+    if (!layer || layer.dataset.ready === "true") return;
+
+    layer.dataset.ready = "true";
+
+    const symbols = ["✦", "✧", "✨", "⋆"];
+
+    for (let i = 0; i < 24; i++) {
+        const sparkle = document.createElement("span");
+
+        sparkle.className = "trustora-sparkle";
+        sparkle.textContent =
+            symbols[Math.floor(Math.random() * symbols.length)];
+
+        sparkle.style.left = Math.random() * 100 + "%";
+        sparkle.style.top = Math.random() * 100 + "%";
+        sparkle.style.fontSize = (10 + Math.random() * 15) + "px";
+        sparkle.style.animationDelay = Math.random() * 3 + "s";
+
+        layer.appendChild(sparkle);
+    }
+})();
