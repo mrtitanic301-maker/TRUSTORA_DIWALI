@@ -1,6 +1,16 @@
 
 const express = require("express");
-const cors = require("cors");
+const uploadLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+        error: "Too many upload attempts. Please try again later."
+    }
+});
+const cors = require("cors");     
+const { rateLimit } = require("express-rate-limit");
 const multer = require("multer");
 const { createClient } = require("@supabase/supabase-js");
 const { randomUUID } = require("crypto");
@@ -51,7 +61,7 @@ app.get("/", (req, res) => {
 });
 
 // Upload photo or video
-app.post("/api/upload/:surpriseId", upload.single("media"), async (req, res) => {
+app.post("/api/upload/:surpriseId", uploadLimiter, upload.single("media"), async (req, res) => {
     let filePath;
 
     try {
