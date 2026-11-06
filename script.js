@@ -687,3 +687,13 @@ if (surpriseId) {
         layer.appendChild(sparkle);
     }
 })();
+// TRUSTORA: Auto-select occasion theme
+document.querySelectorAll(".occasion-card[data-theme]").forEach((card) => {
+    card.addEventListener("click", () => {
+        const themeSelect = document.getElementById("theme");
+
+        if (themeSelect) {
+            themeSelect.value = card.dataset.theme;
+        }
+    });
+});
