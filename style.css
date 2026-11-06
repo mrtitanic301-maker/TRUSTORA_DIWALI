@@ -820,3 +820,44 @@ textarea:focus-visible {
         height: 135px;
     }
 }
+/* TRUSTORA Premium Recipient Reveal */
+@keyframes trustoraCardReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(35px) scale(0.94);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes trustoraNameGlow {
+    0%, 100% {
+        text-shadow: 0 0 8px rgba(217, 181, 109, 0.25);
+    }
+    50% {
+        text-shadow:
+            0 0 12px rgba(217, 181, 109, 0.8),
+            0 0 25px rgba(217, 181, 109, 0.4);
+    }
+}
+
+.surprise-card {
+    animation: trustoraCardReveal 1s ease-out both;
+}
+
+.surprise-name {
+    animation: trustoraNameGlow 2.5s ease-in-out infinite;
+}
+
+.surprise-particle {
+    filter: drop-shadow(0 0 5px rgba(246, 221, 163, 0.7));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .surprise-card,
+    .surprise-name {
+        animation: none;
+    }
+}
