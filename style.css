@@ -55,7 +55,6 @@ textarea:focus-visible {
 }
 
 /* NAVBAR */
-
 .navbar {
     width: 100%;
     min-height: 82px;
@@ -141,7 +140,6 @@ textarea:focus-visible {
 }
 
 /* HERO */
-
 .hero {
     min-height: 650px;
     padding: 100px 10%;
@@ -284,7 +282,6 @@ textarea:focus-visible {
 }
 
 /* COMMON SECTIONS */
-
 .section {
     padding: 95px 9%;
 }
@@ -306,7 +303,6 @@ textarea:focus-visible {
 }
 
 /* OCCASIONS */
-
 .occasion-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -349,7 +345,6 @@ textarea:focus-visible {
 }
 
 /* FEATURES */
-
 .features-section,
 .pricing-section {
     background: #0e0e14;
@@ -366,7 +361,6 @@ textarea:focus-visible {
 }
 
 /* CREATE FORM */
-
 .create-section {
     background:
         radial-gradient(ellipse at 50% 0%, rgba(153,105,43,.13), transparent 55%);
@@ -454,7 +448,6 @@ textarea:focus-visible {
 }
 
 /* GENERATED LINK */
-
 #linkBox {
     margin-top: 25px;
     padding: 20px;
@@ -501,7 +494,6 @@ textarea:focus-visible {
 }
 
 /* PRICING */
-
 .pricing-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 360px));
@@ -569,7 +561,6 @@ textarea:focus-visible {
 }
 
 /* FOOTER */
-
 .footer {
     padding: 55px 9% 25px;
     text-align: center;
@@ -596,8 +587,7 @@ textarea:focus-visible {
     font-size: 11px;
 }
 
-/* SURPRISE PAGE EFFECTS - USED BY SCRIPT */
-
+/* SURPRISE PAGE EFFECTS */
 .surprise-card {
     position: relative;
     z-index: 2;
@@ -647,7 +637,6 @@ textarea:focus-visible {
 }
 
 /* RESPONSIVE TABLET */
-
 @media (max-width: 900px) {
     .hero {
         padding: 80px 7%;
@@ -668,7 +657,6 @@ textarea:focus-visible {
 }
 
 /* RESPONSIVE MOBILE */
-
 @media (max-width: 650px) {
     .navbar {
         padding: 15px 5%;
@@ -745,7 +733,6 @@ textarea:focus-visible {
 }
 
 /* ACCESSIBILITY */
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
